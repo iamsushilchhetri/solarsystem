@@ -8,6 +8,7 @@ import { assetUrl } from '../utils/assetUrl';
 import { useOrbitalMotion, phaseForId } from '../hooks/useOrbitalMotion';
 import { registerBody, unregisterBody } from './bodyRegistry';
 import { OrbitPath } from './OrbitPath';
+import { getProceduralMoonTextures } from './proceduralMoonTexture';
 
 interface MoonProps {
   body: CelestialBody;
@@ -91,11 +92,23 @@ function MoonProcedural({ body, parentDisplayRadius }: MoonProps) {
   const pointerHandlers = usePointerHandlers(body.id);
   const hitRadius = Math.max(radius * 3, 0.22);
 
+  // Natural bodies get a generated crater/surface texture so they read as 3D worlds up close;
+  // artificial/probe/comet markers (rendered via this same pipeline) stay plain.
+  const hasSurface = body.kind === 'moon' || body.kind === 'dwarf';
+  const surface = useMemo(
+    () => (hasSurface ? getProceduralMoonTextures(body.id, body.color) : null),
+    [hasSurface, body.id, body.color],
+  );
+
   return (
     <group ref={positionGroupRef}>
       <mesh ref={spinRef} castShadow receiveShadow>
-        <sphereGeometry args={[radius, 24, 24]} />
-        <meshStandardMaterial color={body.color} roughness={1} metalness={0} />
+        <sphereGeometry args={[radius, 32, 32]} />
+        {surface ? (
+          <meshStandardMaterial map={surface.map} bumpMap={surface.bumpMap} bumpScale={0.03} roughness={1} metalness={0} />
+        ) : (
+          <meshStandardMaterial color={body.color} roughness={1} metalness={0} />
+        )}
       </mesh>
       <mesh visible={false} {...pointerHandlers}>
         <sphereGeometry args={[hitRadius, 10, 10]} />

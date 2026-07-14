@@ -38,7 +38,7 @@ export function useUrlSync() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (selectedBodyId && !isTourActive) params.set('body', selectedBodyId);
-    if (scaleMode !== 'realistic') params.set('scale', scaleMode);
+    if (scaleMode !== 'educational') params.set('scale', scaleMode);
     if (distanceUnit !== 'km') params.set('unit', distanceUnit);
     if (isTourActive) params.set('tour', '1');
 

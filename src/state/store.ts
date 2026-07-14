@@ -68,7 +68,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   speedMultiplier: 1,
   isReversed: false,
 
-  scaleMode: 'realistic',
+  scaleMode: 'educational',
   pendingScaleMode: null,
 
   distanceUnit: 'km',
