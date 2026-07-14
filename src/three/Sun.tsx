@@ -6,6 +6,7 @@ import './materials';
 import { SUN } from '../data/bodies';
 import { useAppStore } from '../state/store';
 import { scaledRadius } from '../utils/astro';
+import { assetUrl } from '../utils/assetUrl';
 import { registerBody, unregisterBody } from './bodyRegistry';
 
 function makeFlareTexture(): THREE.Texture {
@@ -41,7 +42,7 @@ export function Sun() {
   const surfaceMatRef = useRef<any>(null);
   const coronaMatRef = useRef<any>(null);
 
-  const map = useTexture(`/textures/${SUN.textureFile}`);
+  const map = useTexture(assetUrl(`textures/${SUN.textureFile}`));
   const flareTex = useMemo(() => makeFlareTexture(), []);
 
   const radius = scaledRadius(SUN.radiusKm, scaleMode);

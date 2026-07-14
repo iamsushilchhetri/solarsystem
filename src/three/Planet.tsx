@@ -4,6 +4,7 @@ import { useTexture } from '@react-three/drei';
 import type { CelestialBody } from '../types/body';
 import { useAppStore } from '../state/store';
 import { scaledRadius, scaledOrbitDistance } from '../utils/astro';
+import { assetUrl } from '../utils/assetUrl';
 import { useOrbitalMotion, phaseForId } from '../hooks/useOrbitalMotion';
 import { registerBody, unregisterBody } from './bodyRegistry';
 import { Rings } from './Rings';
@@ -41,8 +42,8 @@ export function Planet({ body }: { body: CelestialBody }) {
   const tiltRad = THREE.MathUtils.degToRad(body.axialTiltDeg);
   const inclinationRad = THREE.MathUtils.degToRad(body.inclinationDeg ?? 0);
 
-  const map = useTexture(`/textures/${body.textureFile}`);
-  const cloudMap = body.cloudTextureFile ? useTexture(`/textures/${body.cloudTextureFile}`) : undefined;
+  const map = useTexture(assetUrl(`textures/${body.textureFile}`));
+  const cloudMap = body.cloudTextureFile ? useTexture(assetUrl(`textures/${body.cloudTextureFile}`)) : undefined;
   const bumpScale = BUMP_SCALE[body.id];
 
   useOrbitalMotion({

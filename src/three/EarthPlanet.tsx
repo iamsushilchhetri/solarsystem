@@ -6,6 +6,7 @@ import './materials';
 import type { CelestialBody } from '../types/body';
 import { useAppStore } from '../state/store';
 import { scaledRadius, scaledOrbitDistance } from '../utils/astro';
+import { assetUrl } from '../utils/assetUrl';
 import { useOrbitalMotion, phaseForId } from '../hooks/useOrbitalMotion';
 import { registerBody, unregisterBody } from './bodyRegistry';
 import { AtmosphereGlow } from './AtmosphereGlow';
@@ -28,9 +29,9 @@ export function EarthPlanet({ body }: { body: CelestialBody }) {
   const tiltRad = THREE.MathUtils.degToRad(body.axialTiltDeg);
   const inclinationRad = THREE.MathUtils.degToRad(body.inclinationDeg ?? 0);
 
-  const dayMap = useTexture(`/textures/${body.textureFile}`);
-  const nightMap = useTexture(`/textures/${body.nightTextureFile}`);
-  const cloudsMap = useTexture(`/textures/${body.cloudTextureFile}`);
+  const dayMap = useTexture(assetUrl(`textures/${body.textureFile}`));
+  const nightMap = useTexture(assetUrl(`textures/${body.nightTextureFile}`));
+  const cloudsMap = useTexture(assetUrl(`textures/${body.cloudTextureFile}`));
 
   useOrbitalMotion({
     positionGroupRef,

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
 import type { RingData } from '../types/body';
+import { assetUrl } from '../utils/assetUrl';
 
 function buildRingGeometry(inner: number, outer: number): THREE.RingGeometry {
   const geometry = new THREE.RingGeometry(inner, outer, 128, 1);
@@ -28,7 +29,7 @@ function RingsTextured({ rings, planetRadius, bodyRadiusKm }: RingsProps) {
   const inner = planetRadius * (rings.innerRadiusKm / bodyRadiusKm);
   const outer = planetRadius * (rings.outerRadiusKm / bodyRadiusKm);
   const geometry = useMemo(() => buildRingGeometry(inner, outer), [inner, outer]);
-  const tex = useTexture(`/textures/${rings.textureFile}`);
+  const tex = useTexture(assetUrl(`textures/${rings.textureFile}`));
 
   return (
     <mesh geometry={geometry} rotation-x={-Math.PI / 2} receiveShadow>

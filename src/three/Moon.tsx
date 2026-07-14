@@ -4,6 +4,7 @@ import { useTexture } from '@react-three/drei';
 import type { CelestialBody } from '../types/body';
 import { useAppStore } from '../state/store';
 import { scaledRadius, scaledMoonDistance, scaledOrbitDistance } from '../utils/astro';
+import { assetUrl } from '../utils/assetUrl';
 import { useOrbitalMotion, phaseForId } from '../hooks/useOrbitalMotion';
 import { registerBody, unregisterBody } from './bodyRegistry';
 import { OrbitPath } from './OrbitPath';
@@ -64,7 +65,7 @@ function MoonTextured({ body, parentDisplayRadius }: MoonProps) {
   const scaleMode = useAppStore((s) => s.scaleMode);
   const radius = scaledRadius(body.radiusKm, scaleMode);
   const { positionGroupRef, spinRef, orbitDist } = useMoonMotion(body, parentDisplayRadius, radius);
-  const map = useTexture(`/textures/${body.textureFile}`);
+  const map = useTexture(assetUrl(`textures/${body.textureFile}`));
   const pointerHandlers = usePointerHandlers(body.id);
   const hitRadius = Math.max(radius * 3, 0.22);
 

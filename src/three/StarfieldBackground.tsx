@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { Stars, useTexture } from '@react-three/drei';
+import { assetUrl } from '../utils/assetUrl';
 
 export function StarfieldBackground() {
-  const milkyWay = useTexture('/textures/2k_stars_milky_way.jpg');
+  const milkyWay = useTexture(assetUrl('textures/2k_stars_milky_way.jpg'));
 
   return (
     <>
