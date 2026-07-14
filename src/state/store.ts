@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { ScaleMode, DistanceUnit } from '../utils/astro';
 import { TOUR_STOPS } from '../data/tour';
+import { startAmbient, setAmbientVolume } from '../audio/ambientEngine';
 
 export type CameraMode = 'orbit' | 'free';
 
@@ -28,6 +29,8 @@ interface AppState {
   isTourActive: boolean;
   tourIndex: number;
   tourPlaying: boolean;
+
+  isSoundOn: boolean;
 
   setSelectedBody: (id: string | null) => void;
   setHoveredBody: (id: string | null) => void;
@@ -57,6 +60,8 @@ interface AppState {
   nextTourStep: () => void;
   prevTourStep: () => void;
   toggleTourPlaying: () => void;
+
+  toggleSound: () => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -83,6 +88,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   isTourActive: false,
   tourIndex: 0,
   tourPlaying: true,
+
+  isSoundOn: false,
 
   setSelectedBody: (id) =>
     set((s) => {
@@ -134,6 +141,18 @@ export const useAppStore = create<AppState>((set, get) => ({
   prevTourStep: () =>
     set((s) => ({ tourIndex: (s.tourIndex - 1 + TOUR_STOPS.length) % TOUR_STOPS.length })),
   toggleTourPlaying: () => set((s) => ({ tourPlaying: !s.tourPlaying })),
+
+  toggleSound: () =>
+    set((s) => {
+      const next = !s.isSoundOn;
+      if (next) {
+        startAmbient();
+        setAmbientVolume(0.18);
+      } else {
+        setAmbientVolume(0);
+      }
+      return { isSoundOn: next };
+    }),
 }));
 
 /** Mutable, non-reactive simulation clock — read/written every frame outside React state
