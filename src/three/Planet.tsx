@@ -43,7 +43,8 @@ export function Planet({ body }: { body: CelestialBody }) {
   const inclinationRad = THREE.MathUtils.degToRad(body.inclinationDeg ?? 0);
 
   const map = useTexture(assetUrl(`textures/${body.textureFile}`));
-  const cloudMap = body.cloudTextureFile ? useTexture(assetUrl(`textures/${body.cloudTextureFile}`)) : undefined;
+  const cloudMap = useTexture(assetUrl(`textures/${body.cloudTextureFile ?? body.textureFile}`));
+  const hasClouds = Boolean(body.cloudTextureFile);
   const bumpScale = BUMP_SCALE[body.id];
 
   useOrbitalMotion({
@@ -105,7 +106,7 @@ export function Planet({ body }: { body: CelestialBody }) {
             <meshBasicMaterial />
           </mesh>
 
-          {cloudMap && (
+          {hasClouds && (
             <mesh scale={1.015}>
               <sphereGeometry args={[radius, 48, 48]} />
               <meshStandardMaterial

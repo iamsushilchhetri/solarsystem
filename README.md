@@ -1,32 +1,30 @@
-# React + TypeScript + Vite
+# Solar System Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+An interactive 3D solar system built with React Three Fiber and Three.js — orbits, rotation, moons, rings, and atmospheres simulated from real astronomical data, with a switchable realistic/visual scale mode.
 
-Currently, two official plugins are available:
+**Live demo:** https://iamsushilchhetri.github.io/solarsystem
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+- [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Three.js](https://threejs.org/) via [@react-three/fiber](https://github.com/pmndrs/react-three-fiber) and [@react-three/drei](https://github.com/pmndrs/drei)
+- [Vite](https://vite.dev/) for dev/build tooling
+- [Tailwind CSS](https://tailwindcss.com/) for UI
+- [Zustand](https://github.com/pmndrs/zustand) for state
+- [GSAP](https://gsap.com/) for camera/UI animation
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Development
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # start dev server
+npm run lint     # run oxlint
+npm run build    # type-check + production build to dist/
+npm run preview  # preview the production build locally
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Deployment
+
+Pushing to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which builds the app and publishes `dist/` to GitHub Pages. In the repo settings, **Pages → Build and deployment → Source** must be set to **GitHub Actions** for this to take effect.
+
+The Vite `base` in [`vite.config.ts`](vite.config.ts) is set to `/solarsystem/` to match the Pages subpath; all texture/asset URLs go through [`assetUrl`](src/utils/assetUrl.ts) so they resolve correctly under that base.
