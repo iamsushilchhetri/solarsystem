@@ -1,7 +1,8 @@
-import { Suspense } from 'react';
+import { Suspense, useRef, type RefObject } from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, Vignette, N8AO, GodRays } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 import { PLANETS, SUN } from '../data/bodies';
 import { useAppStore } from '../state/store';
 import { scaledOrbitDistance, scaledRadius } from '../utils/astro';
@@ -25,6 +26,7 @@ import { PhysicsVectors } from './PhysicsVectors';
 function SceneContents() {
   const scaleMode = useAppStore((s) => s.scaleMode);
   const sunRadius = scaledRadius(SUN.radiusKm, scaleMode);
+  const sunMeshRef = useRef<THREE.Mesh>(null);
 
   return (
     <>
@@ -33,7 +35,7 @@ function SceneContents() {
       <hemisphereLight args={['#3a4a6b', '#0a0a12', 0.12]} />
       <StarfieldBackground />
 
-      <Sun />
+      <Sun ref={sunMeshRef} />
 
       {PLANETS.map((body) => (
         <group key={`orbit-${body.id}`} rotation={[THREE.MathUtils.degToRad(body.inclinationDeg ?? 0), 0, 0]}>
@@ -67,6 +69,18 @@ function SceneContents() {
       <CameraRig />
 
       <EffectComposer multisampling={4}>
+        <N8AO aoRadius={1.5} intensity={2} distanceFalloff={1} quality="performance" />
+        <GodRays
+          sun={sunMeshRef as RefObject<THREE.Mesh>}
+          blendFunction={BlendFunction.SCREEN}
+          samples={60}
+          density={0.96}
+          decay={0.9}
+          weight={0.5}
+          exposure={0.5}
+          clampMax={1}
+          blur
+        />
         <Bloom intensity={0.9} luminanceThreshold={0.15} luminanceSmoothing={0.3} mipmapBlur />
         <Vignette eskil={false} offset={0.15} darkness={0.6} />
       </EffectComposer>

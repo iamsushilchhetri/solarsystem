@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
@@ -33,14 +33,16 @@ interface FlareSpec {
   phase: number;
 }
 
-export function Sun() {
+export const Sun = forwardRef<THREE.Mesh>(function Sun(_props, forwardedSurfaceRef) {
   const scaleMode = useAppStore((s) => s.scaleMode);
   const setHovered = useAppStore((s) => s.setHoveredBody);
   const setSelected = useAppStore((s) => s.setSelectedBody);
 
   const groupRef = useRef<THREE.Group>(null);
+  const surfaceMeshRef = useRef<THREE.Mesh>(null);
   const surfaceMatRef = useRef<any>(null);
   const coronaMatRef = useRef<any>(null);
+  useImperativeHandle(forwardedSurfaceRef, () => surfaceMeshRef.current as THREE.Mesh, []);
 
   const map = useTexture(assetUrl(`textures/${SUN.textureFile}`));
   const flareTex = useMemo(() => makeFlareTexture(), []);
@@ -84,6 +86,7 @@ export function Sun() {
       />
 
       <mesh
+        ref={surfaceMeshRef}
         onPointerOver={(e) => {
           e.stopPropagation();
           setHovered(SUN.id);
@@ -124,7 +127,7 @@ export function Sun() {
       ))}
     </group>
   );
-}
+});
 
 function Flare({ spec, radius, texture }: { spec: FlareSpec; radius: number; texture: THREE.Texture }) {
   const ref = useRef<THREE.Sprite>(null);

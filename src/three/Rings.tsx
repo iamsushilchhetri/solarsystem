@@ -32,10 +32,11 @@ function RingsTextured({ rings, planetRadius, bodyRadiusKm }: RingsProps) {
   const tex = useTexture(assetUrl(`textures/${rings.textureFile}`));
 
   return (
-    <mesh geometry={geometry} rotation-x={-Math.PI / 2} receiveShadow>
+    <mesh geometry={geometry} rotation-x={-Math.PI / 2} castShadow receiveShadow>
       <meshStandardMaterial
         map={tex}
         alphaMap={tex}
+        alphaTest={0.2}
         color={rings.color}
         transparent
         opacity={rings.opacity}
@@ -54,7 +55,7 @@ function RingsProcedural({ rings, planetRadius, bodyRadiusKm }: RingsProps) {
   const geometry = useMemo(() => buildRingGeometry(inner, outer), [inner, outer]);
 
   return (
-    <mesh geometry={geometry} rotation-x={-Math.PI / 2} receiveShadow>
+    <mesh geometry={geometry} rotation-x={-Math.PI / 2} castShadow receiveShadow>
       <meshStandardMaterial
         color={rings.color}
         transparent
