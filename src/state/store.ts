@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { ScaleMode, DistanceUnit } from '../utils/astro';
+import { TOUR_STOPS } from '../data/tour';
 
 export type CameraMode = 'orbit' | 'free';
 
@@ -24,6 +25,10 @@ interface AppState {
   activeConceptId: string | null;
   showPhysicsVectors: boolean;
 
+  isTourActive: boolean;
+  tourIndex: number;
+  tourPlaying: boolean;
+
   setSelectedBody: (id: string | null) => void;
   setHoveredBody: (id: string | null) => void;
   setCameraMode: (mode: CameraMode) => void;
@@ -46,6 +51,12 @@ interface AppState {
 
   setActiveConcept: (id: string | null) => void;
   toggleShowPhysicsVectors: () => void;
+
+  startTour: () => void;
+  exitTour: () => void;
+  nextTourStep: () => void;
+  prevTourStep: () => void;
+  toggleTourPlaying: () => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -69,7 +80,20 @@ export const useAppStore = create<AppState>((set, get) => ({
   activeConceptId: null,
   showPhysicsVectors: false,
 
-  setSelectedBody: (id) => set({ selectedBodyId: id }),
+  isTourActive: false,
+  tourIndex: 0,
+  tourPlaying: true,
+
+  setSelectedBody: (id) =>
+    set((s) => {
+      // Any manual selection that isn't the tour's own current stop (clicking a planet,
+      // searching, closing the panel) implicitly ends the guided tour so the TourBar
+      // never drifts out of sync with what's actually focused.
+      if (s.isTourActive && id !== TOUR_STOPS[s.tourIndex]) {
+        return { selectedBodyId: id, isTourActive: false, tourPlaying: false };
+      }
+      return { selectedBodyId: id };
+    }),
   setHoveredBody: (id) => set({ hoveredBodyId: id }),
   setCameraMode: (mode) => set({ cameraMode: mode }),
 
@@ -103,6 +127,13 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setActiveConcept: (id) => set({ activeConceptId: id }),
   toggleShowPhysicsVectors: () => set((s) => ({ showPhysicsVectors: !s.showPhysicsVectors })),
+
+  startTour: () => set({ isTourActive: true, tourIndex: 0, tourPlaying: true }),
+  exitTour: () => set({ isTourActive: false, tourPlaying: false, selectedBodyId: null }),
+  nextTourStep: () => set((s) => ({ tourIndex: (s.tourIndex + 1) % TOUR_STOPS.length })),
+  prevTourStep: () =>
+    set((s) => ({ tourIndex: (s.tourIndex - 1 + TOUR_STOPS.length) % TOUR_STOPS.length })),
+  toggleTourPlaying: () => set((s) => ({ tourPlaying: !s.tourPlaying })),
 }));
 
 /** Mutable, non-reactive simulation clock — read/written every frame outside React state

@@ -10,7 +10,11 @@ export function TopBar() {
   const requestScaleMode = useAppStore((s) => s.requestScaleMode);
   const distanceUnit = useAppStore((s) => s.distanceUnit);
   const setDistanceUnit = useAppStore((s) => s.setDistanceUnit);
+  const isTourActive = useAppStore((s) => s.isTourActive);
+  const startTour = useAppStore((s) => s.startTour);
+  const exitTour = useAppStore((s) => s.exitTour);
   const [focused, setFocused] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const results = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -22,6 +26,16 @@ export function TopBar() {
     setSelectedBody(id);
     setSearchQuery('');
     setFocused(false);
+  };
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard API unavailable (e.g. insecure context) — nothing sensible to do
+    }
   };
 
   return (
@@ -55,6 +69,23 @@ export function TopBar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        <button
+          onClick={() => (isTourActive ? exitTour() : startTour())}
+          className={`glass-panel rounded-full px-3 py-2.5 text-xs transition ${
+            isTourActive ? 'text-cyan-200 bg-cyan-400/20' : 'text-slate-300 hover:text-white'
+          }`}
+        >
+          {isTourActive ? 'Exit Tour' : '🔭 Tour'}
+        </button>
+
+        <button
+          onClick={copyLink}
+          title="Copy shareable link"
+          className="glass-panel rounded-full px-3 py-2.5 text-xs text-slate-300 hover:text-white transition"
+        >
+          {copied ? 'Copied!' : '🔗 Share'}
+        </button>
+
         <div className="glass-panel rounded-full p-1 flex text-xs">
           <button
             onClick={() => requestScaleMode('educational')}
