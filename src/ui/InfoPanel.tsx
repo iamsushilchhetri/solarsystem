@@ -32,9 +32,13 @@ export function InfoPanel() {
   const selectedBodyId = useAppStore((s) => s.selectedBodyId);
   const distanceUnit = useAppStore((s) => s.distanceUnit);
   const setSelectedBody = useAppStore((s) => s.setSelectedBody);
+  const compareList = useAppStore((s) => s.compareList);
+  const toggleCompare = useAppStore((s) => s.toggleCompare);
 
   const body = selectedBodyId ? getBodyById(selectedBodyId) : undefined;
   if (!body) return null;
+
+  const inCompare = compareList.includes(body.id);
 
   const moons = body.kind === 'planet' ? getMoonsOf(body.id) : [];
   const parent = body.parentId ? getBodyById(body.parentId) : undefined;
@@ -51,14 +55,26 @@ export function InfoPanel() {
               {body.name}
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={() => setSelectedBody(null)}
-            className="text-slate-400 hover:text-white text-xl leading-none px-2 py-1 rounded-full hover:bg-white/10 transition"
-            aria-label="Close"
-          >
-            ×
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => toggleCompare(body.id)}
+              title={inCompare ? 'Remove from comparison' : 'Add to comparison'}
+              className={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap transition ${
+                inCompare ? 'bg-cyan-400/20 text-cyan-200' : 'bg-white/5 text-slate-300 hover:bg-white/15'
+              }`}
+            >
+              {inCompare ? '✓ Comparing' : '⚖ Compare'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedBody(null)}
+              className="text-slate-400 hover:text-white text-xl leading-none px-2 py-1 rounded-full hover:bg-white/10 transition"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         <Section title="Physical Characteristics">

@@ -13,6 +13,8 @@ export function TopBar() {
   const isTourActive = useAppStore((s) => s.isTourActive);
   const startTour = useAppStore((s) => s.startTour);
   const exitTour = useAppStore((s) => s.exitTour);
+  const compareList = useAppStore((s) => s.compareList);
+  const setCompareOpen = useAppStore((s) => s.setCompareOpen);
   const [focused, setFocused] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -69,6 +71,15 @@ export function TopBar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        {compareList.length > 0 && (
+          <button
+            onClick={() => setCompareOpen(true)}
+            className="glass-panel rounded-full px-3 py-2.5 text-xs text-slate-300 hover:text-white transition"
+          >
+            ⚖ Compare ({compareList.length})
+          </button>
+        )}
+
         <button
           onClick={() => (isTourActive ? exitTour() : startTour())}
           className={`glass-panel rounded-full px-3 py-2.5 text-xs transition ${

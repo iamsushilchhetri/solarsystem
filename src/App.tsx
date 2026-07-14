@@ -1,7 +1,8 @@
-import { SolarSystemCanvas } from './three/SolarSystemCanvas';
+import { lazy, Suspense } from 'react';
 import { TopBar } from './ui/TopBar';
 import { TimeControls } from './ui/TimeControls';
 import { InfoPanel } from './ui/InfoPanel';
+import { ComparePanel } from './ui/ComparePanel';
 import { ScaleWarningModal } from './ui/ScaleWarningModal';
 import { TourBar } from './ui/TourBar';
 import { LoadingScreen } from './ui/LoadingScreen';
@@ -11,6 +12,10 @@ import { useUrlSync } from './hooks/useUrlSync';
 import { useTourEngine } from './hooks/useTourEngine';
 import { useSelectSound } from './hooks/useSelectSound';
 
+const SolarSystemCanvas = lazy(() =>
+  import('./three/SolarSystemCanvas').then((m) => ({ default: m.SolarSystemCanvas })),
+);
+
 function App() {
   useUrlSync();
   useTourEngine();
@@ -18,11 +23,14 @@ function App() {
 
   return (
     <div className="relative w-full h-full">
-      <SolarSystemCanvas />
+      <Suspense fallback={null}>
+        <SolarSystemCanvas />
+      </Suspense>
       <TopBar />
       <TimeControls />
       <TourBar />
       <InfoPanel />
+      <ComparePanel />
       <ScaleWarningModal />
       <SoundToggle />
       <OnboardingHint />
