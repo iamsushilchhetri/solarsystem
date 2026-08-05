@@ -2,7 +2,7 @@
 
 An interactive 3D solar system built with React Three Fiber and Three.js — orbits, rotation, moons, rings, and atmospheres simulated from real astronomical data, with a switchable realistic/visual scale mode.
 
-**Live demo:** https://iamsushilchhetri.github.io/solarsystem
+**Live demo:** https://realsolarsystemweb.netlify.app/
 
 ## Tech stack
 
